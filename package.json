@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "svg-forge.helloWorld",
-        "title": "Hello World"
+        "command": "svg-forge.editor",
+        "title": "SVG Editor"
       }
     ]
   },
