@@ -1,54 +1,72 @@
-const svgView = document.querySelector('.svg-view');
-const svg = document.querySelector('.svg-view svg');
+const svgView = document.querySelector('section.svg-view');
+const svg = svgView.querySelector('svg');
+
+let scale = 1;
+let translateX = 0;
+let translateY = 0;
 
 let isDragging = false;
-let initialMouseX = 0;
-let initialMouseY = 0;
-let initialSVGTransformX = 0;
-let initialSVGTransformY = 0;
+let prevMouseX = 0;
+let prevMouseY = 0;
+const SCALE_FACTOR = 1.1;
 
-svgView.addEventListener('mousedown', e => {
+center();
+
+function updateTransform() {
+    svg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+}
+
+function center() {
+    const rect = svgView.getBoundingClientRect();
+    const svgRect = svg.getBoundingClientRect();
+
+    translateX = (rect.width - svgRect.width) / 2;
+    translateY = (rect.height - svgRect.height) / 2;
+
+    updateTransform();
+}
+
+svgView.addEventListener("wheel", e => {
+    e.preventDefault();
+
+    const rect = svgView.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const prevSvgX = (mouseX - translateX) / scale;
+    const prevSvgY = (mouseY - translateY) / scale;
+    console.log(mouseX, mouseY, prevSvgX, prevSvgY);
+
+    const zoomIn = e.deltaY < 0;
+    scale = zoomIn ? scale * SCALE_FACTOR : scale / SCALE_FACTOR;
+
+    translateX = mouseX - prevSvgX * scale;
+    translateY = mouseY - prevSvgY * scale;
+
+    updateTransform();
+});
+
+
+svgView.addEventListener("mousedown", e => {
     isDragging = true;
-
-
-
-
-
-    
-    initialMouseX = e.clientX;
-    initialMouseY = e.clientY;
-
-    const transform = getComputedStyle(svg).transform;
-    if (transform === 'none') {
-        initialSVGTransformX = 0;
-        initialSVGTransformY = 0;
-    } else {
-        const matrix = new DOMMatrix(transform);
-        initialSVGTransformX = matrix.m41;
-        initialSVGTransformY = matrix.m42;
-    }
-
+    prevMouseX = e.clientX;
+    prevMouseY = e.clientY;
     e.preventDefault();
 });
 
-svgView.addEventListener('mousemove', (event) => {
-    if (!isDragging) return;
+svgView.addEventListener("mousemove", e => {
+    if (!isDragging)
+        return;
 
-    // Calculate the distance the mouse has moved since the mousedown event
-    const deltaX = event.clientX - initialMouseX;
-    const deltaY = event.clientY - initialMouseY;
+    translateX += e.clientX - prevMouseX;
+    translateY += e.clientY - prevMouseY;
 
-    // Update the transform property to move the SVG relative to the mouse movement
-    svg.style.transform = `translate(-50%, -50%) translate(${initialSVGTransformX + deltaX}px, ${initialSVGTransformY + deltaY}px)`;
+    prevMouseX = e.clientX;
+    prevMouseY = e.clientY;
+
+    updateTransform();
 });
 
-svgView.addEventListener('mouseup', () => {
-    // Stop dragging when mouse is released
+svgView.addEventListener("mouseup", () => {
     isDragging = false;
 });
-
-svgView.addEventListener('mouseleave', () => {
-    // Also stop dragging if the mouse leaves the svg-view
-    isDragging = false;
-});
-
