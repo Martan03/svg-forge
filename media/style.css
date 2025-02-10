@@ -22,4 +22,5 @@ section.svg-view {
 
 section.svg-view > svg {
     position: absolute;
+    transform-origin: 0 0;
 }
