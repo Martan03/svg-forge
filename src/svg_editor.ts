@@ -27,6 +27,16 @@ export class SvgEditor {
             context.extensionUri,
             file,
         );
+
+        const fileUri = file.uri;
+        const fileChangeDisposable =
+            vscode.workspace.onDidSaveTextDocument(saved => {
+                if (saved.uri.toString() === fileUri.toString()) {
+                    SvgEditor.reload(panel, context.extensionUri, file);
+                }
+            }
+        );
+        context.subscriptions.push(fileChangeDisposable);
     }
 
     private static svgGui(
@@ -44,8 +54,9 @@ export class SvgEditor {
         return SvgEditor.htmlSkeleton(
             `<link href="${styleUri}" rel="stylesheet" />`,
             `<nav class="menu">
-                <button onclick="setBg('dark')">Test1</button>
-                <button onclick="setBg('light')">Test2</button>
+                <button onclick="setBg(null)">T</button>
+                <button class="theme dark" onclick="setBg('dark')"></button>
+                <button class="theme light" onclick="setBg('light')"></button>
             </nav>
 
             <section class="svg-view">
@@ -56,6 +67,14 @@ export class SvgEditor {
 
             <script src="${scriptUri}"></script>`
         );
+    }
+
+    private static reload(
+        panel: vscode.WebviewPanel,
+        extUri: vscode.Uri,
+        file: vscode.TextDocument
+    ) {
+        panel.webview.html = SvgEditor.svgGui(panel.webview, extUri, file);
     }
 
     private static htmlSkeleton(head: string, content: string): string {
