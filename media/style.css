@@ -20,7 +20,32 @@ section.svg-view {
     position: relative;
 }
 
-section.svg-view > svg {
+section.svg-view > .svg-wrapper {
     position: absolute;
     transform-origin: 0 0;
+    background-size: 20px 20px;
+    background-repeat: repeat;
+}
+
+section.svg-view > .svg-wrapper.dark {
+    background-image: conic-gradient(
+        #202020 0 90deg,
+        #353535 0 180deg,
+        #202020 0 270deg,
+        #353535 0
+    );
+}
+
+section.svg-view > .svg-wrapper.light {
+    background-image: conic-gradient(
+        #c9c9c9 0 90deg,
+        #eee 0 180deg,
+        #c9c9c9 0 270deg,
+        #eee 0
+    );
+}
+
+section.svg-view > .svg-wrapper > svg {
+    width: 100%;
+    height: 100%;
 }

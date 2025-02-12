@@ -44,12 +44,14 @@ export class SvgEditor {
         return SvgEditor.htmlSkeleton(
             `<link href="${styleUri}" rel="stylesheet" />`,
             `<nav class="menu">
-                <button>Test1</button>
-                <button>Test2</button>
+                <button onclick="setBg('dark')">Test1</button>
+                <button onclick="setBg('light')">Test2</button>
             </nav>
 
             <section class="svg-view">
-                ${file.getText()}
+                <div class="svg-wrapper">
+                    ${file.getText()}
+                </div>
             </section>
 
             <script src="${scriptUri}"></script>`
