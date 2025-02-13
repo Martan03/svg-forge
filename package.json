@@ -15,9 +15,19 @@
     "commands": [
       {
         "command": "svg-forge.editor",
-        "title": "SVG Editor"
+        "title": "SVG Editor",
+        "icon": "$(open-preview)"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .svg",
+          "command": "svg-forge.editor",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

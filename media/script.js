@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
     svgView.addEventListener("mousemove", handleMouseMove);
     svgView.addEventListener("mouseup", () => isDragging = false);
     svgView.addEventListener("mouseleave", () => isDragging = false);
+
+    window.addEventListener("message", reload);
 });
 
 function handleScroll(e) {
@@ -92,4 +94,13 @@ function setBg(theme) {
     svg.classList.remove('light');
     svg.classList.remove('dark');
     svg.classList.add(theme);
+}
+
+function reload(e) {
+    switch (e.data.action) {
+        case "update":
+            svg.innerHTML = e.data.content;
+            svgElement = svg.querySelector('svg');
+            break;
+    }
 }

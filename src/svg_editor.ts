@@ -1,7 +1,19 @@
 import * as vscode from 'vscode';
+import DisposableArray from './disposable_array';
 
-export class SvgEditor {
+export class SvgEditor implements vscode.Disposable {
     public static readonly viewType = 'svg-forge.editor';
+
+    panel: vscode.WebviewPanel;
+    diss: DisposableArray<vscode.Disposable> = new DisposableArray();
+
+    constructor(panel: vscode.WebviewPanel) {
+        this.panel = panel;
+    }
+
+    dispose() {
+        this.diss.dispose();
+    }
 
     public static show(context: vscode.ExtensionContext) {
         const file = vscode.window.activeTextEditor?.document;
@@ -21,33 +33,24 @@ export class SvgEditor {
             vscode.ViewColumn.Beside,
             { enableScripts: true }
         );
+        let editor = new SvgEditor(panel);
 
-        panel.webview.html = SvgEditor.svgGui(
-            panel.webview,
-            context.extensionUri,
-            file,
-        );
+        editor.diss.arr.push(vscode.workspace.onDidSaveTextDocument(e => {
+            if (e.fileName == file.fileName)
+                editor.reload(e);
+        }));
 
-        const fileUri = file.uri;
-        const fileChangeDisposable =
-            vscode.workspace.onDidSaveTextDocument(saved => {
-                if (saved.uri.toString() === fileUri.toString()) {
-                    SvgEditor.reload(panel, context.extensionUri, file);
-                }
-            }
-        );
-        context.subscriptions.push(fileChangeDisposable);
+        editor.panel.webview.html = editor.svgGui(context.extensionUri, file);
+        editor.panel.onDidDispose(() => editor.dispose());
+
+        context.subscriptions.push(editor);
     }
 
-    private static svgGui(
-        webview: vscode.Webview,
-        extensionUri: vscode.Uri,
-        file: vscode.TextDocument,
-    ) {
-        const styleUri = webview.asWebviewUri(
+    svgGui(extensionUri: vscode.Uri, file: vscode.TextDocument) {
+        const styleUri = this.panel.webview.asWebviewUri(
             vscode.Uri.joinPath(extensionUri, 'media', 'style.css')
         );
-        const scriptUri = webview.asWebviewUri(
+        const scriptUri = this.panel.webview.asWebviewUri(
             vscode.Uri.joinPath(extensionUri, 'media', 'script.js')
         );
 
@@ -69,12 +72,11 @@ export class SvgEditor {
         );
     }
 
-    private static reload(
-        panel: vscode.WebviewPanel,
-        extUri: vscode.Uri,
-        file: vscode.TextDocument
-    ) {
-        panel.webview.html = SvgEditor.svgGui(panel.webview, extUri, file);
+    reload(file: vscode.TextDocument) {
+        this.panel.webview.postMessage({
+            action: "update",
+            content: file.getText(),
+        });
     }
 
     private static htmlSkeleton(head: string, content: string): string {
