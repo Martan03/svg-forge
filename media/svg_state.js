@@ -1,6 +1,6 @@
 import { svg, svgElement, svgView } from "./elements.js";
 
-class SvgState {
+export class SvgState {
     static instance = null;
 
     constructor() {
@@ -31,7 +31,7 @@ class SvgState {
         this.translateX = (rect.width - svgRect.width) / 2;
         this.translateY = (rect.height - svgRect.height) / 2;
 
-        updateTransform();
+        this.updateTransform();
     }
 
     updateTransform() {
@@ -42,4 +42,4 @@ class SvgState {
     }
 }
 
-export default SvgState;
+export const svgState = new SvgState();

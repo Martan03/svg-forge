@@ -74,10 +74,16 @@ export class SvgEditor implements vscode.Disposable {
 
                     <div class="divider"></div>
 
-                    <button class="action selected">
+                    <button
+                        class="action selected"
+                        onclick="setAction(this, Action.CURSOR)"
+                    >
                         <img src="${getMediaUri('icons', 'cursor.svg')}" />
                     </button>
-                    <button class="action">
+                    <button
+                        class="action"
+                        onclick="setAction(this, Action.ADD_LINE)"
+                    >
                         <img src="${getMediaUri('icons', 'line.svg')}" />
                     </button>
                 </div>

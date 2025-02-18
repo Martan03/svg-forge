@@ -1,9 +1,10 @@
 import { svgView } from "../elements.js";
+import { svgState } from "../svg_state.js";
 
 const SCALE_FACTOR = 1.1;
 
 let isDragging = false;
-let width, height, scale = 1;
+let prevMouseX = 0, prevMouseY = 0;
 
 export function handleScroll(e) {
     e.preventDefault();
@@ -12,15 +13,15 @@ export function handleScroll(e) {
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    const deltaX = (mouseX - translateX) / scale;
-    const deltaY = (mouseY - translateY) / scale;
+    const deltaX = (mouseX - svgState.translateX) / svgState.scale;
+    const deltaY = (mouseY - svgState.translateY) / svgState.scale;
 
-    scale *= Math.pow(SCALE_FACTOR, -e.deltaY / 100);
+    svgState.scale *= Math.pow(SCALE_FACTOR, -e.deltaY / 100);
 
-    translateX = mouseX - deltaX * scale;
-    translateY = mouseY - deltaY * scale;
+    svgState.translateX = mouseX - deltaX * svgState.scale;
+    svgState.translateY = mouseY - deltaY * svgState.scale;
 
-    updateTransform();
+    svgState.updateTransform();
 }
 
 export function handleMouseDown(e) {
@@ -31,23 +32,18 @@ export function handleMouseDown(e) {
 }
 
 export function handleMouseMove(e) {
-    mousePos = getMousePos(e);
-    setMousePos(mousePos);
-
     if (!isDragging)
         return;
 
-    translateX += e.clientX - prevMouseX;
-    translateY += e.clientY - prevMouseY;
+    svgState.translateX += e.clientX - prevMouseX;
+    svgState.translateY += e.clientY - prevMouseY;
 
     prevMouseX = e.clientX;
     prevMouseY = e.clientY;
 
-    updateTransform();
+    svgState.updateTransform();
 }
 
-function updateTransform() {
-    svg.style.transform = `translate(${translateX}px, ${translateY}px)`;
-    svg.style.width = `${width * scale}px`;
-    svg.style.height = `${height * scale}px`
+export function handleMouseUp() {
+    isDragging = false;
 }
