@@ -1,106 +1,126 @@
-const SCALE_FACTOR = 1.1;
+import Action from "./action/action.js";
+import {
+    actionButtons, svg, svgElement, svgView, themeButtons, posElement,
+    refreshSvg
+} from "./elements.js";
+import { svgState } from "./svg_state.js";
 
-let svgView, svg, svgElement;
-let width, height, scale = 1;
-let translateX = 0, translateY = 0;
-let isDragging = false, prevMouseX = 0, prevMouseY = 0;
+import * as cursor from './action/cursor.js';
+import * as line from './action/line.js';
+import * as circle from './action/circle.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    svgView = document.querySelector('section.svg-view');
-    svg = svgView.querySelector('.svg-wrapper');
-    svgElement = svg.querySelector('svg');
+let action = Action.CURSOR;
 
-    if (!svgView || !svg || !svgElement)
-        return;
+svgView.addEventListener("wheel", handleScroll);
+svgView.addEventListener("mousedown", handleMouseDown);
+svgView.addEventListener("mousemove", handleMouseMove);
+svgView.addEventListener("mouseup", handleMouseUp);
+svgView.addEventListener("mouseleave", handleMouseUp);
 
-    width = svgElement.getAttribute('width') ?? svgView.clientWidth;
-    height = svgElement.getAttribute('height') ?? svgView.clientHeight;
-    svgElement.removeAttribute("width");
-    svgElement.removeAttribute("height");
+window.addEventListener("message", reload);
+window.Action = Action;
 
-    updateTransform();
-    center();
+svgState.updateTransform();
+svgState.center();
 
-    // Adds transparency grid based on color theme by default
-    if (document.body.classList.contains('vscode-dark'))
-        svg.classList.add('dark');
-    else if (document.body.classList.contains('vscode-light'))
-        svg.classList.add('light')
+// Adds transparency grid based on color theme by default
+if (document.body.classList.contains('vscode-dark'))
+    setBg(document.querySelector('button.dark'));
+else if (document.body.classList.contains('vscode-light'))
+    setBg(document.querySelector('button.light'));
 
-    svgView.addEventListener("wheel", handleScroll);
-    svgView.addEventListener("mousedown", handleMouseDown);
-    svgView.addEventListener("mousemove", handleMouseMove);
-    svgView.addEventListener("mouseup", () => isDragging = false);
-    svgView.addEventListener("mouseleave", () => isDragging = false);
+function setBg (button) {
+    themeButtons.forEach(btn => btn.classList.remove('selected'));
+    button.classList.add('selected');
 
-    window.addEventListener("message", reload);
-});
+    svg.classList.remove('light');
+    svg.classList.remove('dark');
+    svg.classList.add(button.dataset.theme);
+}
+window.setBg = setBg;
+
+function setAction (button, act) {
+    actionButtons.forEach(btn => btn.classList.remove('selected'));
+    button.classList.add('selected');
+    action = act;
+}
+window.setAction = setAction;
 
 function handleScroll(e) {
-    e.preventDefault();
-
-    const rect = svgView.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const deltaX = (mouseX - translateX) / scale;
-    const deltaY = (mouseY - translateY) / scale;
-
-    scale *= Math.pow(SCALE_FACTOR, -e.deltaY / 100);
-
-    translateX = mouseX - deltaX * scale;
-    translateY = mouseY - deltaY * scale;
-
-    updateTransform();
+    switch (action) {
+        case Action.CURSOR:
+            cursor.handleScroll(e);
+            break;
+        case Action.ADD_LINE:
+            line.handleScroll(e);
+            break;
+        case Action.ADD_CIRCLE:
+            circle.handleScroll(e);
+            break;
+    }
 }
 
 function handleMouseDown(e) {
-    e.preventDefault();
-    isDragging = true;
-    prevMouseX = e.clientX;
-    prevMouseY = e.clientY;
+    switch (action) {
+        case Action.CURSOR:
+            cursor.handleMouseDown(e);
+            break;
+        case Action.ADD_LINE:
+            line.handleMouseDown(e);
+            break;
+        case Action.ADD_CIRCLE:
+            circle.handleMouseDown(e);
+            break;
+    }
 }
 
 function handleMouseMove(e) {
-    if (!isDragging)
+    const mousePos = getMousePos(e);
+    setMousePos(mousePos);
+
+    switch (action) {
+        case Action.CURSOR:
+            cursor.handleMouseMove(e);
+            break;
+        case Action.ADD_LINE:
+            line.handleMouseMove(e);
+            break;
+        case Action.ADD_CIRCLE:
+            circle.handleMouseMove(e);
+            break;
+    }
+}
+
+function handleMouseUp(e) {
+    switch (action) {
+        case Action.CURSOR:
+            cursor.handleMouseUp(e);
+            break;
+    }
+}
+
+export function getMousePos(e) {
+    const rect = svgElement.getBoundingClientRect();
+    return {
+        x: (e.clientX - rect.left) / (svgState.scale * svgState.width)
+            * svgState.wbWidth,
+        y: (e.clientY - rect.top) / (svgState.scale * svgState.height)
+            * svgState.wbHeight,
+    };
+}
+
+export function setMousePos(pos) {
+    if (!posElement)
         return;
-
-    translateX += e.clientX - prevMouseX;
-    translateY += e.clientY - prevMouseY;
-
-    prevMouseX = e.clientX;
-    prevMouseY = e.clientY;
-
-    updateTransform();
-}
-
-function updateTransform() {
-    svg.style.transform = `translate(${translateX}px, ${translateY}px)`;
-    svg.style.width = `${width * scale}px`;
-    svg.style.height = `${height * scale}px`
-}
-
-function center() {
-    const rect = svgView.getBoundingClientRect();
-    const svgRect = svg.getBoundingClientRect();
-
-    translateX = (rect.width - svgRect.width) / 2;
-    translateY = (rect.height - svgRect.height) / 2;
-
-    updateTransform();
-}
-
-function setBg(theme) {
-    svg.classList.remove('light');
-    svg.classList.remove('dark');
-    svg.classList.add(theme);
+    posElement.innerHTML =
+        `${pos?.x.toFixed(3) ?? '-'}, ${pos?.y.toFixed(3) ?? '-'}`;
 }
 
 function reload(e) {
     switch (e.data.action) {
         case "update":
             svg.innerHTML = e.data.content;
-            svgElement = svg.querySelector('svg');
+            refreshSvg();
             break;
     }
 }

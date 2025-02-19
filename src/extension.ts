@@ -55,4 +55,28 @@ function svgEditor(context: vscode.ExtensionContext) {
         let i = editors.arr.indexOf(editor);
         editors.arr.splice(i, 1);
     });
+
+	editor.panel.webview.onDidReceiveMessage((message) => {
+		if (message.action === "updateSvg") {   
+			updateSvgFile(file, message.content);
+		}
+	});
+}
+
+function updateSvgFile(file: vscode.TextDocument, newContent: string) {
+    const edit = new vscode.WorkspaceEdit();
+    const fullRange = new vscode.Range(
+        file.lineAt(0).range.start,
+        file.lineAt(file.lineCount - 1).range.end
+    );
+
+    edit.replace(file.uri, fullRange, newContent);
+
+    vscode.workspace.applyEdit(edit).then(success => {
+        if (success) {
+            file.save();
+        } else {
+            vscode.window.showErrorMessage("Failed to update SVG file.");
+        }
+    });
 }

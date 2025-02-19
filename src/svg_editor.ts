@@ -47,19 +47,55 @@ export class SvgEditor implements vscode.Disposable {
     }
 
     svgGui(extensionUri: vscode.Uri, file: vscode.TextDocument) {
-        const styleUri = this.panel.webview.asWebviewUri(
-            vscode.Uri.joinPath(extensionUri, 'media', 'style.css')
+        const getMediaUri = (...path: string[]) => this.panel.webview.asWebviewUri(
+            vscode.Uri.joinPath(extensionUri, 'media', ...path)
         );
         const scriptUri = this.panel.webview.asWebviewUri(
             vscode.Uri.joinPath(extensionUri, 'media', 'script.js')
         );
 
         return SvgEditor.htmlSkeleton(
-            `<link href="${styleUri}" rel="stylesheet" />`,
+            `<link href="${getMediaUri('style.css')}" rel="stylesheet" />`,
             `<nav class="menu">
-                <button onclick="setBg(null)">T</button>
-                <button class="theme dark" onclick="setBg('dark')"></button>
-                <button class="theme light" onclick="setBg('light')"></button>
+                <div>
+                    <button class="theme" onclick="setBg(this)">
+                        T
+                    </button>
+                    <button
+                        class="theme dark"
+                        onclick="setBg(this)"
+                        data-theme="dark"
+                    ></button>
+                    <button
+                        class="theme light"
+                        onclick="setBg(this)"
+                        data-theme="light"
+                    ></button>
+
+                    <div class="divider"></div>
+
+                    <button
+                        class="action selected"
+                        onclick="setAction(this, Action.CURSOR)"
+                    >
+                        <img src="${getMediaUri('icons', 'cursor.svg')}" />
+                    </button>
+                    <button
+                        class="action"
+                        onclick="setAction(this, Action.ADD_LINE)"
+                    >
+                        <img src="${getMediaUri('icons', 'line.svg')}" />
+                    </button>
+                    <button
+                        class="action"
+                        onclick="setAction(this, Action.ADD_CIRCLE)"
+                    >
+                        <img src="${getMediaUri('icons', 'circle.svg')}" />
+                    </button>
+                </div>
+                <div>
+                    <p id="mouse-pos"></p>
+                </div>
             </nav>
 
             <section class="svg-view">
@@ -68,7 +104,7 @@ export class SvgEditor implements vscode.Disposable {
                 </div>
             </section>
 
-            <script src="${scriptUri}"></script>`
+            <script src="${getMediaUri('script.js')}" type="module"></script>`
         );
     }
 
@@ -89,6 +125,9 @@ export class SvgEditor implements vscode.Disposable {
                         content="width=device-width, initial-scale=1.0"
                     >
                     <title>svg-forge</title>
+                    <script>
+                        const vscode = acquireVsCodeApi();
+                    </script>
                     ${head}
                 </head>
                 <body style="display:block; width: 100vw; height: 100vh; padding: 0; margin: 0; overflow: hidden">
