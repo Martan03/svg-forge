@@ -1,10 +1,13 @@
 import Action from "./action/action.js";
 import {
-    actionButtons, svg, svgElement, svgView, themeButtons, posElement
+    actionButtons, svg, svgElement, svgView, themeButtons, posElement,
+    refreshSvg
 } from "./elements.js";
 import { svgState } from "./svg_state.js";
+
 import * as cursor from './action/cursor.js';
 import * as line from './action/line.js';
+import * as circle from './action/circle.js';
 
 let action = Action.CURSOR;
 
@@ -51,6 +54,9 @@ function handleScroll(e) {
         case Action.ADD_LINE:
             line.handleScroll(e);
             break;
+        case Action.ADD_CIRCLE:
+            circle.handleScroll(e);
+            break;
     }
 }
 
@@ -61,6 +67,9 @@ function handleMouseDown(e) {
             break;
         case Action.ADD_LINE:
             line.handleMouseDown(e);
+            break;
+        case Action.ADD_CIRCLE:
+            circle.handleMouseDown(e);
             break;
     }
 }
@@ -75,6 +84,9 @@ function handleMouseMove(e) {
             break;
         case Action.ADD_LINE:
             line.handleMouseMove(e);
+            break;
+        case Action.ADD_CIRCLE:
+            circle.handleMouseMove(e);
             break;
     }
 }
@@ -108,7 +120,7 @@ function reload(e) {
     switch (e.data.action) {
         case "update":
             svg.innerHTML = e.data.content;
-            svgElement = svg.querySelector('svg');
+            refreshSvg();
             break;
     }
 }

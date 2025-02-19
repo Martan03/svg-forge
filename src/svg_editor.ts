@@ -86,6 +86,12 @@ export class SvgEditor implements vscode.Disposable {
                     >
                         <img src="${getMediaUri('icons', 'line.svg')}" />
                     </button>
+                    <button
+                        class="action"
+                        onclick="setAction(this, Action.ADD_CIRCLE)"
+                    >
+                        <img src="${getMediaUri('icons', 'circle.svg')}" />
+                    </button>
                 </div>
                 <div>
                     <p id="mouse-pos"></p>
