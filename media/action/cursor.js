@@ -1,4 +1,4 @@
-import { svgView } from "../elements.js";
+import { scaleDisplay, svgView } from "../elements.js";
 import { svgState } from "../svg_state.js";
 
 const SCALE_FACTOR = 1.1;
@@ -17,6 +17,7 @@ export function handleScroll(e) {
     const deltaY = (mouseY - svgState.translateY) / svgState.scale;
 
     svgState.scale *= Math.pow(SCALE_FACTOR, -e.deltaY / 100);
+    scaleDisplay.innerHTML = `${(svgState.scale * 100).toFixed(2)}%`;
 
     svgState.translateX = mouseX - deltaX * svgState.scale;
     svgState.translateY = mouseY - deltaY * svgState.scale;

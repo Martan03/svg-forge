@@ -1,7 +1,10 @@
 import Action from "./action/action.js";
 import {
     actionButtons, svg, svgElement, svgView, themeButtons, posElement,
-    refreshSvg
+    refreshSvg,
+    scaleOptions,
+    scaleOption,
+    scaleDisplay
 } from "./elements.js";
 import { svgState } from "./svg_state.js";
 
@@ -15,7 +18,16 @@ svgView.addEventListener("wheel", handleScroll);
 svgView.addEventListener("mousedown", handleMouseDown);
 svgView.addEventListener("mousemove", handleMouseMove);
 svgView.addEventListener("mouseup", handleMouseUp);
-svgView.addEventListener("mouseleave", handleMouseUp);
+svgView.addEventListener("mouseleave", handleMouseLeave);
+
+scaleOptions.forEach(o => o.addEventListener("click", e => {
+    const num = parseFloat(e.target.value);
+    svgState.scale = isNaN(num) ? coverScale() : num;
+
+    scaleDisplay.innerHTML = `${(svgState.scale * 100).toFixed(2)}%`;
+    svgState.updateTransform();
+    scaleOption.classList.remove('visible');
+}));
 
 window.addEventListener("message", reload);
 window.Action = Action;
@@ -29,7 +41,7 @@ if (document.body.classList.contains('vscode-dark'))
 else if (document.body.classList.contains('vscode-light'))
     setBg(document.querySelector('button.light'));
 
-function setBg (button) {
+function setBg(button) {
     themeButtons.forEach(btn => btn.classList.remove('selected'));
     button.classList.add('selected');
 
@@ -39,12 +51,14 @@ function setBg (button) {
 }
 window.setBg = setBg;
 
-function setAction (button, act) {
+function setAction(button, act) {
     actionButtons.forEach(btn => btn.classList.remove('selected'));
     button.classList.add('selected');
     action = act;
 }
 window.setAction = setAction;
+
+window.scaleOption = scaleOption;
 
 function handleScroll(e) {
     switch (action) {
@@ -99,6 +113,11 @@ function handleMouseUp(e) {
     }
 }
 
+function handleMouseLeave(e) {
+    setMousePos(null);
+    handleMouseUp(e);
+}
+
 export function getMousePos(e) {
     const rect = svgElement.getBoundingClientRect();
     return {
@@ -114,6 +133,15 @@ export function setMousePos(pos) {
         return;
     posElement.innerHTML =
         `${pos?.x.toFixed(3) ?? '-'}, ${pos?.y.toFixed(3) ?? '-'}`;
+}
+
+function coverScale() {
+    const rect = svgView.getBoundingClientRect();
+    const svgRect = svg.getBoundingClientRect();
+
+    let scaleX = rect.width / svgRect.width;
+    let scaleY = rect.height / svgRect.height;
+    return Math.min(scaleX, scaleY);
 }
 
 function reload(e) {

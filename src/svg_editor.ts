@@ -58,6 +58,31 @@ export class SvgEditor implements vscode.Disposable {
             `<link href="${getMediaUri('style.css')}" rel="stylesheet" />`,
             `<nav class="menu">
                 <div>
+                    <div class="select-wrapper">
+                        <div
+                            class="select"
+                            onclick="scaleOption.classList.toggle('visible')"
+                        >
+                            <p id="scale-display">100%</p>
+                            <p>v</p>
+                        </div>
+                        <div class="options">
+                            <option value="0.25">25%</option>
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                            <option value="1.75">175%</option>
+                            <option value="2">200%</option>
+                            <option value="3">300%</option>
+                            <option value="4">400%</option>
+                            <option value="null">Fit screen</option>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
                     <button class="theme" onclick="setBg(this)">
                         T
                     </button>
