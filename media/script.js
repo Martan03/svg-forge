@@ -59,6 +59,7 @@ function setAction(button, act) {
 window.setAction = setAction;
 
 window.scaleOption = scaleOption;
+window.svgState = svgState;
 
 function handleScroll(e) {
     switch (action) {
@@ -137,10 +138,9 @@ export function setMousePos(pos) {
 
 function coverScale() {
     const rect = svgView.getBoundingClientRect();
-    const svgRect = svg.getBoundingClientRect();
 
-    let scaleX = rect.width / svgRect.width;
-    let scaleY = rect.height / svgRect.height;
+    let scaleX = rect.width / svgState.width;
+    let scaleY = rect.height / svgState.height;
     return Math.min(scaleX, scaleY);
 }
 

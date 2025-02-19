@@ -64,7 +64,7 @@ export class SvgEditor implements vscode.Disposable {
                             onclick="scaleOption.classList.toggle('visible')"
                         >
                             <p id="scale-display">100%</p>
-                            <p>v</p>
+                            <img src="${getMediaUri('icons', 'expand.svg')}" />
                         </div>
                         <div class="options">
                             <option value="0.25">25%</option>
@@ -80,6 +80,9 @@ export class SvgEditor implements vscode.Disposable {
                             <option value="null">Fit screen</option>
                         </div>
                     </div>
+                    <button onclick="svgState.center()">
+                        <img src="${getMediaUri('icons', 'center.svg')}" />
+                    </button>
 
                     <div class="divider"></div>
 
