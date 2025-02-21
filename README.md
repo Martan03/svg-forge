@@ -2,9 +2,19 @@
 
 SVG Forge lets you preview and edit SVGs in VSCode with ease
 
+![image](https://github.com/user-attachments/assets/6b3eb6b6-a0ab-4deb-ae10-71e01e58e5b1)
+
 ## Table of Contents
 
-{{mdcon}}
+- [Features](#features)
+    - [Planned features](#planned-features)
+- [Description](#description)
+    - [Openning SVG Forge](#openning-svg-forge)
+    - [Controls](#controls)
+    - [Preview](#preview)
+- [Release Notes](#release-notes)
+    - [1.0.0](#100)
+- [Links](#links)
 
 ## Features
 
@@ -28,6 +38,8 @@ When in SVG file, the top bar contains open preview icon, which you can click
 to open the extension. It opens beside the SVG file and starts previewing the
 SVG itself.
 
+![image](https://github.com/user-attachments/assets/f8e09227-9703-4c92-9940-3d66d1d8a853)
+
 ### Controls
 
 On top of the preview page is a bar containing controls. I'll describe each
@@ -49,6 +61,8 @@ to create the element - more about this in the [preview](#preview) description.
 On the most right of the bar are the current coordinates of the cursor based on
 the SVG view box.
 
+![image](https://github.com/user-attachments/assets/a8b01ffe-30c1-419c-a714-92c416c715a2)
+
 ### Preview
 
 Preview displays the actual SVG. It changes the scale of it based on the set
@@ -64,6 +78,8 @@ Circle control is similar to the line one, but the first click sets circle
 center position and then the second click sets the radius based on the distance
 from the center of the circle. Same as with line control, you can change the
 thickness of the stroke using scroll wheel before clicking for the second time.
+
+![image](https://github.com/user-attachments/assets/6b3eb6b6-a0ab-4deb-ae10-71e01e58e5b1)
 
 ## Release Notes
 
