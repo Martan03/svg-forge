@@ -3,6 +3,8 @@
   "displayName": "svg-forge",
   "description": "SVG Forge lets you preview and edit SVGs in VSCode with ease",
   "version": "0.0.1",
+  "publisher": "Martan03",
+  "repository": "https://github.com/Martan03/svg-forge",
   "engines": {
     "vscode": "^1.97.0"
   },

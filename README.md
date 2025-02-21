@@ -83,7 +83,7 @@ thickness of the stroke using scroll wheel before clicking for the second time.
 
 ## Release Notes
 
-### 1.0.0
+### v0.0.1
 
 - Initial release of SVG Forge
     - SVG preview
