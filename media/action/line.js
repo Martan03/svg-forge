@@ -1,57 +1,29 @@
 import { svgElement } from "../elements.js";
 import { getMousePos } from "../script.js";
+import { CreateActionType } from "./action.js";
 
-const SCROLL_FACTOR = 1.1;
+class LineAction extends CreateActionType {
+    handleMouseMove(e) {
+        if (!this.startPoint || !this.preview)
+            return;
 
-let startPoint, previewLine;
-let strokeWidth = 1;
+        const pos = getMousePos(e);
+        this.preview.setAttribute("x2", pos.x.toFixed(3));
+        this.preview.setAttribute("y2", pos.y.toFixed(3));
+    }
 
-export function handleScroll(e) {
-    strokeWidth *= Math.pow(SCROLL_FACTOR, -e.deltaY / 100);
-    previewLine.setAttribute('stroke-width', strokeWidth);
-}
+    create() {
+        this.preview =
+            document.createElementNS("http://www.w3.org/2000/svg", "line");
 
-export function handleMouseDown(e) {
-    const pos = getMousePos(e);
-    if (!startPoint) {
-        startPoint = pos;
-        createLine();
-    } else {
-        postLine();
+        this.preview.setAttribute('stroke', 'red');
+        this.preview.setAttribute('stroke-width', this.strokeWidth);
+        this.preview.setAttribute('x1', this.startPoint.x.toFixed(3));
+        this.preview.setAttribute('y1', this.startPoint.y.toFixed(3));
+        this.preview.setAttribute('x2', this.startPoint.x.toFixed(3));
+        this.preview.setAttribute('y2', this.startPoint.y.toFixed(3));
+        svgElement.appendChild(this.preview);
     }
 }
 
-export function handleMouseMove(e) {
-    if (!startPoint || !previewLine)
-        return;
-
-    setEndPos(getMousePos(e));
-}
-
-function createLine() {
-    previewLine =
-        document.createElementNS("http://www.w3.org/2000/svg", "line");
-
-    previewLine.setAttribute('stroke', 'red');
-    previewLine.setAttribute('stroke-width', strokeWidth);
-    previewLine.setAttribute('x1', startPoint.x.toFixed(3));
-    previewLine.setAttribute('y1', startPoint.y.toFixed(3));
-    previewLine.setAttribute('x2', startPoint.x.toFixed(3));
-    previewLine.setAttribute('y2', startPoint.y.toFixed(3));
-    svgElement.appendChild(previewLine);
-}
-
-function setEndPos(pos) {
-    previewLine.setAttribute("x2", pos.x.toFixed(3));
-    previewLine.setAttribute("y2", pos.y.toFixed(3));
-}
-
-function postLine() {
-    previewLine.setAttribute('stroke', 'white');
-    vscode.postMessage({
-        action: 'updateSvg',
-        content: svgElement.outerHTML,
-    });
-    previewLine = null;
-    startPoint = null;
-}
+export default LineAction;

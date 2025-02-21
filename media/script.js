@@ -8,16 +8,19 @@ import {
 } from "./elements.js";
 import { svgState } from "./svg_state.js";
 
-import * as cursor from './action/cursor.js';
-import * as line from './action/line.js';
-import * as circle from './action/circle.js';
+import CursorAction from './action/cursor.js';
+import LineAction from './action/line.js';
+import CircleAction from './action/circle.js';
+import RectAction from './action/rect.js';
 
-let action = Action.CURSOR;
+let action = new CursorAction();
 
-svgView.addEventListener("wheel", handleScroll);
-svgView.addEventListener("mousedown", handleMouseDown);
+// Action handlers without any additional code
+svgView.addEventListener("wheel", e => action.handleScroll(e));
+svgView.addEventListener("mousedown", e => action.handleMouseDown(e));
+svgView.addEventListener("mouseup", e => action.handleMouseUp(e));
+// Action handlers with additional code
 svgView.addEventListener("mousemove", handleMouseMove);
-svgView.addEventListener("mouseup", handleMouseUp);
 svgView.addEventListener("mouseleave", handleMouseLeave);
 
 scaleOptions.forEach(o => o.addEventListener("click", e => {
@@ -54,69 +57,37 @@ window.setBg = setBg;
 function setAction(button, act) {
     actionButtons.forEach(btn => btn.classList.remove('selected'));
     button.classList.add('selected');
-    action = act;
+
+    switch (act) {
+        case Action.CURSOR:
+            action = new CursorAction();
+            break;
+        case Action.ADD_LINE:
+            action = new LineAction();
+            break;
+        case Action.ADD_CIRCLE:
+            action = new CircleAction();
+            break;
+        case Action.ADD_RECT:
+            action = new RectAction();
+            break;
+    }
 }
 window.setAction = setAction;
 
 window.scaleOption = scaleOption;
 window.svgState = svgState;
 
-function handleScroll(e) {
-    switch (action) {
-        case Action.CURSOR:
-            cursor.handleScroll(e);
-            break;
-        case Action.ADD_LINE:
-            line.handleScroll(e);
-            break;
-        case Action.ADD_CIRCLE:
-            circle.handleScroll(e);
-            break;
-    }
-}
-
-function handleMouseDown(e) {
-    switch (action) {
-        case Action.CURSOR:
-            cursor.handleMouseDown(e);
-            break;
-        case Action.ADD_LINE:
-            line.handleMouseDown(e);
-            break;
-        case Action.ADD_CIRCLE:
-            circle.handleMouseDown(e);
-            break;
-    }
-}
-
 function handleMouseMove(e) {
     const mousePos = getMousePos(e);
     setMousePos(mousePos);
 
-    switch (action) {
-        case Action.CURSOR:
-            cursor.handleMouseMove(e);
-            break;
-        case Action.ADD_LINE:
-            line.handleMouseMove(e);
-            break;
-        case Action.ADD_CIRCLE:
-            circle.handleMouseMove(e);
-            break;
-    }
-}
-
-function handleMouseUp(e) {
-    switch (action) {
-        case Action.CURSOR:
-            cursor.handleMouseUp(e);
-            break;
-    }
+    action.handleMouseMove(e);
 }
 
 function handleMouseLeave(e) {
     setMousePos(null);
-    handleMouseUp(e);
+    action.handleMouseUp(e);
 }
 
 export function getMousePos(e) {
