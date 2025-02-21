@@ -37,7 +37,10 @@ function svgEditor(context: vscode.ExtensionContext) {
         SvgEditor.viewType,
         `Preview ${file.fileName.split('/').at(-1)}`,
         vscode.ViewColumn.Beside,
-        { enableScripts: true }
+        {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+        }
     );
 	let editor = new SvgEditor(panel);
 
@@ -57,7 +60,7 @@ function svgEditor(context: vscode.ExtensionContext) {
     });
 
 	editor.panel.webview.onDidReceiveMessage((message) => {
-		if (message.action === "updateSvg") {   
+		if (message.action === "updateSvg") {
 			updateSvgFile(file, message.content);
 		}
 	});

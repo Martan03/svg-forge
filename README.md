@@ -1,71 +1,80 @@
-# svg-forge README
+# svg-forge
 
-This is the README for your extension "svg-forge". After writing up a brief description, we recommend including the following sections.
+SVG Forge lets you preview and edit SVGs in VSCode with ease
+
+## Table of Contents
+
+{{mdcon}}
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Preview SVG
+    - Automatically updates on save
+    - Change scale and position of the SVG
+    - Display view box coordinates based on mouse position
+- Edit SVG
+    - Create new line or circle
 
-For example if there is an image subfolder under your extension project workspace:
+### Planned features
 
-\!\[feature X\]\(images/feature-x.png\)
+- Select SVG element to move it around and edit its attributes
+- Add settings
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Description
 
-## Requirements
+### Openning SVG Forge
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+When in SVG file, the top bar contains open preview icon, which you can click
+to open the extension. It opens beside the SVG file and starts previewing the
+SVG itself.
 
-## Extension Settings
+### Controls
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+On top of the preview page is a bar containing controls. I'll describe each
+control from left to right.
 
-For example:
+First is scale select, which by default is 100%, but you can change it to any
+value in the options (or you can have custom value, which is described in
+[next section](#preview)). Next to it is a center button, which centers the
+SVG.
 
-This extension contributes the following settings:
+Next section contains background options, starting with transparent, dark
+checkerboard or light cherkerboard (background is set to checkerboard by
+default and to dark/light based on current theme).
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+The last section contains actual controls for the preview. First one is cursor,
+which allows to work with the preview. Next are line and circle, which allow
+to create the element - more about this in the [preview](#preview) description.
 
-## Known Issues
+On the most right of the bar are the current coordinates of the cursor based on
+the SVG view box.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Preview
+
+Preview displays the actual SVG. It changes the scale of it based on the set
+scale. If cursor control is selected, you can change the scale to custom value
+using a mouse wheel, and move the SVG around by dragging it.
+
+When you change to line control, you can create a new line. When you somewhere
+on the preview, it creates a first point of the line and then when you click
+for the second time, it creates a second one. Before placing the second point,
+you can use scroll wheel to change the line thickness.
+
+Circle control is similar to the line one, but the first click sets circle
+center position and then the second click sets the radius based on the distance
+from the center of the circle. Same as with line control, you can change the
+thickness of the stroke using scroll wheel before clicking for the second time.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
+- Initial release of SVG Forge
+    - SVG preview
+    - Basic SVG editor with option to add line or circle
 
-### 1.0.1
+## Links
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- **Author:** [Martan03](https://github.com/Martan03)
+- **GitHub repository:** [svg-forge](https://github.com/Martan03/svg-forge)
+- **Author website:** [martan03.github.io](https://martan03.github.io)
