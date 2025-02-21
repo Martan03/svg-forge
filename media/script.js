@@ -149,6 +149,7 @@ function reload(e) {
         case "update":
             svg.innerHTML = e.data.content;
             refreshSvg();
+            svgState.refreshSvg();
             break;
     }
 }
