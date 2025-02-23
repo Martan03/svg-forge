@@ -2,12 +2,13 @@
 
 SVG Forge lets you preview and edit SVGs in VSCode with ease
 
-![image](https://github.com/user-attachments/assets/6b3eb6b6-a0ab-4deb-ae10-71e01e58e5b1)
+![image](https://github.com/user-attachments/assets/528b836c-6853-432e-917e-ab3ca3d15c78)
 
 ## Table of Contents
 
 - [Features](#features)
     - [Planned features](#planned-features)
+- [How to get it](#how-to-get-it)
 - [Description](#description)
     - [Openning SVG Forge](#openning-svg-forge)
     - [Controls](#controls)
@@ -29,6 +30,11 @@ SVG Forge lets you preview and edit SVGs in VSCode with ease
 
 - Select SVG element to move it around and edit its attributes
 - Add settings
+
+### How to get it
+
+The extension is available on 
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Martan03.svg-forge).
 
 ## Description
 
@@ -55,13 +61,14 @@ checkerboard or light cherkerboard (background is set to checkerboard by
 default and to dark/light based on current theme).
 
 The last section contains actual controls for the preview. First one is cursor,
-which allows to work with the preview. Next are line and circle, which allow
-to create the element - more about this in the [preview](#preview) description.
+which allows to work with the preview. The next ones are line, circle and 
+rectangle, which allow you to create the corresponding element - more about 
+this in the [preview](#preview) description.
 
 On the most right of the bar are the current coordinates of the cursor based on
 the SVG view box.
 
-![image](https://github.com/user-attachments/assets/a8b01ffe-30c1-419c-a714-92c416c715a2)
+![image](https://github.com/user-attachments/assets/94b7be7c-5ecc-4474-ae73-37befa570f74)
 
 ### Preview
 
@@ -79,7 +86,11 @@ center position and then the second click sets the radius based on the distance
 from the center of the circle. Same as with line control, you can change the
 thickness of the stroke using scroll wheel before clicking for the second time.
 
-![image](https://github.com/user-attachments/assets/6b3eb6b6-a0ab-4deb-ae10-71e01e58e5b1)
+Rectangle control allows you to create any rectangle. The first and second 
+clicks define the rectangle itself. Scroll wheel can again be used for changing
+the stroke width.
+
+![image](https://github.com/user-attachments/assets/528b836c-6853-432e-917e-ab3ca3d15c78)
 
 ## Release Notes
 
@@ -92,5 +103,6 @@ thickness of the stroke using scroll wheel before clicking for the second time.
 ## Links
 
 - **Author:** [Martan03](https://github.com/Martan03)
+- **Marketplace**: [svg-forge](https://marketplace.visualstudio.com/items?itemName=Martan03.svg-forge)
 - **GitHub repository:** [svg-forge](https://github.com/Martan03/svg-forge)
 - **Author website:** [martan03.github.io](https://martan03.github.io)
